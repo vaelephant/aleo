@@ -4,8 +4,8 @@ import random
 import requests
 import json
 
-workid = '02'  #对应work号
-base_variable_part = 'yc13884935.02-3090*1'  #对应gpu信息
+workid = '02'  # 对应work号
+base_variable_part = 'yc13884935.02-3090*1'  # 对应gpu信息
 
 def send_dingtalk_message(message):
     url = "https://oapi.dingtalk.com/robot/send?access_token=46cadf10343c8f951440686dfd2baf4e10e0ad5f7231418daebc8c9c64f58ada"
@@ -30,6 +30,7 @@ def restart_command():
         
         # 发送钉钉消息通知
         send_dingtalk_message(f"id={workid},重启命令已启动: {command}")
+        print(f"id={workid}, 重启命��已启动: {command}")
         
         # 等待1小时（3600秒）
         time.sleep(3600)
