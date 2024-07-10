@@ -1,3 +1,14 @@
+
+'''
+程序功能 ：用于获取aleo的算力，直接运行即可
+
+部署地址：45.77.31.212
+部署目录：(base) root@vultr:~/code# ls
+                f2pool-a-power.log  f2pool-a-power.py
+(base) root@vultr:~/code# pwd
+/root/code
+
+'''
 import requests
 import time
 import json
