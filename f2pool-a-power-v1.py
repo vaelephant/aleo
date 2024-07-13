@@ -25,7 +25,9 @@ username = "yc13884935"
 api_url_template = "https://api.f2pool.com/aleo-staging/{username}/{miner}"
 api_token = "jb10a1qppxectuaty7txfvlsewyg7uhqqbtsnsgs8e0ixwgk728ma9y70gzz6fge"
 dingding_webhook = "https://oapi.dingtalk.com/robot/send?access_token=e7e12064d580bf28711608d9103bd48ff77410bea3e57f9fbfff5c754070a3c5"
-miners = ["2230901", "2330901", "2730901", "2830901", "3630801"]
+dingtalk_webhook_error = 'https://oapi.dingtalk.com/robot/send?access_token=33b8bb7fbfa87f1eefabf5c02451871bae05b080cc8b6fb7b441e126d038d149'
+
+miners = ["2230901", "0230901", "2730901", "2830901", "3630801"]
 
 def fetch_mining_status(miner):
     api_url = api_url_template.format(username=username, miner=miner)
@@ -56,6 +58,7 @@ def fetch_mining_status(miner):
         logger.error(f"API 响应内容: {response.text}")
         return None
 
+# 正常消息播报
 def send_to_dingding(message):
     headers = {
         "Content-Type": "application/json"
@@ -73,6 +76,21 @@ def send_to_dingding(message):
     else:
         logger.error(f"消息发送失败，状态码: {response.status_code}")
 
+# 异常消息报警
+def send_to_dingtalk_error(message):
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    payload = {
+        "msgtype": "text",
+        "text": {
+            "content": '[报警] ' + message
+        }
+    }
+    response = requests.post(dingtalk_webhook_error, headers=headers, data=json.dumps(payload))
+    if response.status_code != 200:
+        logger.error(f"Failed to send message to DingTalk: {response.text}")
+
 print("开始运行脚本...")
 logger.info("开始运行脚本...")
 
@@ -88,6 +106,10 @@ for miner in miners:
         )
         messages.append(message)
         logger.info(message)
+        if status['latest_hashrate'] == 0:
+            alert_message = f"workid： {status['miner']}  算力为0，时间戳: {status['timestamp']}"
+            send_to_dingtalk_error(alert_message)
+            logger.error(alert_message)
     else:
         logger.error(f"获取矿工 {miner} 数据失败。")
 
