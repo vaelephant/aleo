@@ -102,12 +102,12 @@ for miner in miners:
         message = (
             f"workid: {status['miner']}\n"
             f"时间戳: {status['timestamp']}\n"
-            f"最新算力: {status['latest_hashrate']}\n"
+            f"最新算力: {float(status['latest_hashrate']):.2f}\n"
         )
         messages.append(message)
         logger.info(message)
-        if status['latest_hashrate'] == 0:
-            alert_message = f"workid： {status['miner']}  算力为0，时间戳: {status['timestamp']}"
+        if float(status['latest_hashrate']) == 0:
+            alert_message = f"矿工 {status['miner']} 算力为0，时间戳: {status['timestamp']}"
             send_to_dingtalk_error(alert_message)
             logger.error(alert_message)
     else:
